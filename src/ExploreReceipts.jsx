@@ -1,454 +1,642 @@
 import { useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
-  Music2,
-  ShoppingBag,
-  CreditCard,
+  X,
   ChevronLeft,
   ChevronRight,
-  X,
+  Music2,
+  ShoppingBag,
+  Receipt,
 } from "lucide-react";
 import "./ExploreReceipts.css";
 
 const PAGE_SIZE = 12;
 
+const TYPE_OPTIONS = [
+  { id: "all", label: "ALL" },
+  { id: "music", label: "MUSIC" },
+  { id: "household", label: "HOUSEHOLD" },
+  { id: "transactions", label: "TRANSACTIONS" },
+];
+
+function formatNumber(value) {
+  return Number(value || 0).toLocaleString();
+}
+
 function formatAmount(value) {
-  return `₹${Number(value || 0).toLocaleString("en-IN", {
-    maximumFractionDigits: 0,
-  })}`;
-}
+  const amount = Number(value);
 
-function formatDate(value) {
-  if (!value) return "Unknown date";
+  if (Number.isNaN(amount)) return "—";
 
-  const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return String(value);
-  }
-
-  return date.toLocaleDateString("en-IN", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
+  return amount.toLocaleString(undefined, {
+    maximumFractionDigits: 2,
   });
-}
-
-function getTitle(item, source) {
-  if (source === "music") {
-    return item.trackName || "Unknown track";
-  }
-
-  if (source === "household") {
-    return (
-      item.note || item.subcategory || item.category || "Household receipt"
-    );
-  }
-
-  return item.merchant || item.category || "Transaction";
-}
-
-function getSubtitle(item, source) {
-  if (source === "music") {
-    return item.artistName || "Unknown artist";
-  }
-
-  if (source === "household") {
-    return `${item.category || "Other"} · ${item.subcategory || "General"}`;
-  }
-
-  return `${item.category || "Other"} · ${item.city || "Unknown location"}`;
 }
 
 function getDate(item, source) {
   if (source === "music") {
-    return item.ts;
+    return item.ts || "";
   }
 
   if (source === "household") {
-    return item.date;
+    return item.date || item.Date || "";
   }
 
-  return item.transDateTransTime;
+  return item.transDateTransTime || item.trans_date_trans_time || "";
+}
+
+function getTitle(item, source) {
+  if (source === "music") {
+    return item.trackName || "Unknown Track";
+  }
+
+  if (source === "household") {
+    return item.note || item.subcategory || item.category || "Household Record";
+  }
+
+  return item.merchant || "Transaction";
+}
+
+function getSubtitle(item, source) {
+  if (source === "music") {
+    return item.artistName || "Unknown Artist";
+  }
+
+  if (source === "household") {
+    return item.category || item.subcategory || "Household";
+  }
+
+  return item.category || "Transaction";
+}
+
+function getSearchText(item, source) {
+  if (source === "music") {
+    return [
+      item.trackName,
+      item.artistName,
+      item.albumName,
+      item.platform,
+      item.reasonStart,
+      item.reasonEnd,
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+  }
+
+  if (source === "household") {
+    return [
+      item.note,
+      item.category,
+      item.subcategory,
+      item.mode,
+      item.incomeExpense,
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+  }
+
+  return [
+    item.merchant,
+    item.category,
+    item.city,
+    item.state,
+    item.first,
+    item.last,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
 }
 
 function getIcon(source) {
   if (source === "music") return Music2;
-  if (source === "household") return ShoppingBag;
-  return CreditCard;
+  if (source === "household") return Receipt;
+  return ShoppingBag;
 }
 
-function getTypeLabel(source) {
+function getSourceLabel(source) {
   if (source === "music") return "MUSIC";
   if (source === "household") return "HOUSEHOLD";
   return "TRANSACTION";
 }
 
-function ReceiptCard({ receipt, onOpen }) {
-  const Icon = getIcon(receipt.source);
+function getAmount(item, source) {
+  if (source === "household") {
+    return item.amount;
+  }
 
-  const amount =
-    receipt.source === "music" ? null : Number(receipt.amount || 0);
+  if (source === "transactions") {
+    return item.amt;
+  }
 
-  return (
-    <motion.button
-      className={`receipt-card receipt-${receipt.source}`}
-      onClick={() => onOpen(receipt)}
-      whileHover={{ y: -5 }}
-      whileTap={{ scale: 0.98 }}
-      layout
-    >
-      <div className="receipt-card-top">
-        <div className="receipt-icon">
-          <Icon size={19} />
-        </div>
-
-        <span className="receipt-type">{getTypeLabel(receipt.source)}</span>
-      </div>
-
-      <div className="receipt-card-body">
-        <h3>{getTitle(receipt.item, receipt.source)}</h3>
-
-        <p>{getSubtitle(receipt.item, receipt.source)}</p>
-      </div>
-
-      <div className="receipt-card-bottom">
-        <span>{formatDate(getDate(receipt.item, receipt.source))}</span>
-
-        {amount !== null ? (
-          <strong>{formatAmount(amount)}</strong>
-        ) : (
-          <span className="receipt-open">VIEW →</span>
-        )}
-      </div>
-    </motion.button>
-  );
+  return null;
 }
 
 export default function ExploreReceipts({ data }) {
-  const [activeType, setActiveType] = useState("all");
   const [search, setSearch] = useState("");
+  const [type, setType] = useState("all");
   const [page, setPage] = useState(1);
-  const [selectedReceipt, setSelectedReceipt] = useState(null);
+  const [selected, setSelected] = useState(null);
 
-  const allReceipts = useMemo(() => {
-    return [
-      ...(data?.music || []).map((item) => ({
-        source: "music",
-        item,
-      })),
+  /*
+   * IMPORTANT PERFORMANCE CHANGE
+   *
+   * We DO NOT create a giant array containing all
+   * 162,000+ records.
+   *
+   * Instead, we keep the original datasets and only
+   * collect the records required for the current page.
+   */
 
-      ...(data?.household || []).map((item) => ({
-        source: "household",
-        item,
-      })),
+  const results = useMemo(() => {
+    if (!data) {
+      return {
+        items: [],
+        total: 0,
+      };
+    }
 
-      ...(data?.transactions || []).map((item) => ({
-        source: "transactions",
-        item,
-      })),
-    ];
-  }, [data]);
-
-  const filteredReceipts = useMemo(() => {
     const query = search.trim().toLowerCase();
 
-    return allReceipts.filter(({ source, item }) => {
-      const typeMatches = activeType === "all" || source === activeType;
+    const sources = [];
 
-      if (!typeMatches) return false;
+    if (type === "all" || type === "music") {
+      sources.push({
+        name: "music",
+        records: data.music || [],
+      });
+    }
 
-      if (!query) return true;
+    if (type === "all" || type === "household") {
+      sources.push({
+        name: "household",
+        records: data.household || [],
+      });
+    }
 
-      const searchableText = [
-        item.trackName,
-        item.artistName,
-        item.albumName,
-        item.note,
-        item.category,
-        item.subcategory,
-        item.merchant,
-        item.city,
-        item.state,
-      ]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
+    if (type === "all" || type === "transactions") {
+      sources.push({
+        name: "transactions",
+        records: data.transactions || [],
+      });
+    }
 
-      return searchableText.includes(query);
-    });
-  }, [allReceipts, activeType, search]);
+    /*
+     * Fast path:
+     *
+     * When there is no search query, we only need
+     * enough records to display the current page.
+     *
+     * This avoids creating 162K wrapper objects.
+     */
 
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredReceipts.length / PAGE_SIZE),
-  );
+    if (!query) {
+      const start = (page - 1) * PAGE_SIZE;
+      const end = start + PAGE_SIZE;
 
-  const safePage = Math.min(page, totalPages);
+      let globalIndex = 0;
+      const items = [];
+      let total = 0;
 
-  const visibleReceipts = useMemo(() => {
-    const start = (safePage - 1) * PAGE_SIZE;
+      for (const source of sources) {
+        total += source.records.length;
 
-    return filteredReceipts.slice(start, start + PAGE_SIZE);
-  }, [filteredReceipts, safePage]);
+        if (items.length >= PAGE_SIZE) {
+          continue;
+        }
 
-  function changeType(type) {
-    setActiveType(type);
+        for (let i = 0; i < source.records.length; i++) {
+          if (globalIndex >= start && globalIndex < end) {
+            items.push({
+              source: source.name,
+              item: source.records[i],
+              index: globalIndex,
+            });
+          }
+
+          globalIndex++;
+
+          if (globalIndex >= end) {
+            break;
+          }
+        }
+      }
+
+      return {
+        items,
+        total,
+      };
+    }
+
+    /*
+     * Search mode:
+     *
+     * Search through original arrays without building
+     * a second copy of the complete dataset.
+     */
+
+    const matched = [];
+
+    let total = 0;
+
+    for (const source of sources) {
+      const records = source.records;
+
+      for (let i = 0; i < records.length; i++) {
+        const item = records[i];
+
+        if (getSearchText(item, source.name).includes(query)) {
+          total++;
+
+          if (matched.length < page * PAGE_SIZE) {
+            matched.push({
+              source: source.name,
+              item,
+              index: i,
+            });
+          }
+        }
+      }
+    }
+
+    const start = (page - 1) * PAGE_SIZE;
+
+    return {
+      items: matched.slice(start, start + PAGE_SIZE),
+      total,
+    };
+  }, [data, search, type, page]);
+
+  const totalPages = Math.max(1, Math.ceil(results.total / PAGE_SIZE));
+
+  function changeType(nextType) {
+    setType(nextType);
     setPage(1);
+    setSelected(null);
   }
 
-  function handleSearch(event) {
+  function changeSearch(event) {
     setSearch(event.target.value);
     setPage(1);
   }
 
+  function clearSearch() {
+    setSearch("");
+    setPage(1);
+  }
+
+  function openReceipt(record) {
+    setSelected(record);
+  }
+
+  function closeReceipt() {
+    setSelected(null);
+  }
+
+  function goToPage(nextPage) {
+    const safePage = Math.min(Math.max(nextPage, 1), totalPages);
+
+    setPage(safePage);
+
+    window.requestAnimationFrame(() => {
+      document.getElementById("explore-receipts")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+  }
+
   return (
-    <section className="explore-receipts">
-      <div className="receipts-header">
-        <div>
-          <div className="eyebrow">
-            <span className="eyebrow-dot" />
-            RECEIPT ARCHIVE
-          </div>
+    <section className="explore-section" id="explore-receipts">
+      {/* =================================================
+          HEADER
+      ================================================= */}
 
-          <h2>
-            Explore the
-            <br />
-            <span>raw moments.</span>
-          </h2>
-
-          <p>
-            Search across music, household records and transaction receipts from
-            the supplied datasets.
-          </p>
+      <div className="explore-header">
+        <div className="explore-eyebrow">
+          <Receipt size={15} />
+          EXPLORE YOUR DIGITAL RECEIPTS
         </div>
 
-        <div className="receipt-total">
-          <span>VISIBLE RECORDS</span>
-          <strong>{filteredReceipts.length.toLocaleString("en-IN")}</strong>
-        </div>
+        <h2>
+          Every record
+          <span> tells something.</span>
+        </h2>
+
+        <p>
+          Search across music, household activity and transaction records to
+          uncover individual moments inside the larger data story.
+        </p>
       </div>
 
-      <div className="receipt-controls">
-        <div className="receipt-search">
-          <Search size={18} />
+      {/* =================================================
+          CONTROLS
+      ================================================= */}
+
+      <div className="explore-controls">
+        <div className="explore-search">
+          <Search size={17} />
 
           <input
             type="text"
-            placeholder="Search artist, merchant, category, city..."
             value={search}
-            onChange={handleSearch}
+            onChange={changeSearch}
+            placeholder="Search your digital traces..."
+            aria-label="Search digital traces"
           />
 
           {search && (
             <button
-              className="clear-search"
-              onClick={() => {
-                setSearch("");
-                setPage(1);
-              }}
+              type="button"
+              onClick={clearSearch}
               aria-label="Clear search"
             >
-              <X size={16} />
+              <X size={15} />
             </button>
           )}
         </div>
 
-        <div className="receipt-filters">
-          <button
-            className={activeType === "all" ? "active" : ""}
-            onClick={() => changeType("all")}
-          >
-            ALL
-          </button>
-
-          <button
-            className={activeType === "music" ? "active" : ""}
-            onClick={() => changeType("music")}
-          >
-            <Music2 size={14} />
-            MUSIC
-          </button>
-
-          <button
-            className={activeType === "household" ? "active" : ""}
-            onClick={() => changeType("household")}
-          >
-            <ShoppingBag size={14} />
-            HOUSEHOLD
-          </button>
-
-          <button
-            className={activeType === "transactions" ? "active" : ""}
-            onClick={() => changeType("transactions")}
-          >
-            <CreditCard size={14} />
-            TRANSACTIONS
-          </button>
+        <div
+          className="explore-filters"
+          role="tablist"
+          aria-label="Receipt categories"
+        >
+          {TYPE_OPTIONS.map((option) => (
+            <button
+              key={option.id}
+              type="button"
+              className={type === option.id ? "active" : ""}
+              onClick={() => changeType(option.id)}
+              role="tab"
+              aria-selected={type === option.id}
+            >
+              {option.label}
+            </button>
+          ))}
         </div>
       </div>
 
-      {visibleReceipts.length > 0 ? (
-        <>
-          <motion.div className="receipts-grid" layout>
-            {visibleReceipts.map((receipt, index) => (
-              <ReceiptCard
-                key={`${receipt.source}-${index}-${safePage}`}
-                receipt={receipt}
-                onOpen={setSelectedReceipt}
-              />
-            ))}
-          </motion.div>
+      {/* =================================================
+          RESULT META
+      ================================================= */}
 
-          <div className="pagination">
-            <button
-              disabled={safePage === 1}
-              onClick={() => setPage((current) => Math.max(1, current - 1))}
-            >
-              <ChevronLeft size={17} />
-              PREVIOUS
-            </button>
+      <div className="explore-meta">
+        <span>{formatNumber(results.total)} RECORDS</span>
 
-            <div className="page-status">
-              <span>PAGE</span>
-              <strong>{safePage}</strong>
-              <span>OF</span>
-              <strong>{totalPages}</strong>
-            </div>
+        <span>
+          PAGE {page} / {totalPages}
+        </span>
+      </div>
 
-            <button
-              disabled={safePage === totalPages}
-              onClick={() =>
-                setPage((current) => Math.min(totalPages, current + 1))
-              }
-            >
-              NEXT
-              <ChevronRight size={17} />
-            </button>
-          </div>
-        </>
+      {/* =================================================
+          RECEIPT GRID
+      ================================================= */}
+
+      {results.items.length > 0 ? (
+        <motion.div className="receipt-grid" layout>
+          {results.items.map(({ source, item, index }) => {
+            const Icon = getIcon(source);
+            const title = getTitle(item, source);
+            const subtitle = getSubtitle(item, source);
+            const amount = getAmount(item, source);
+
+            return (
+              <motion.button
+                type="button"
+                className="receipt-card"
+                key={`${source}-${index}`}
+                layout
+                initial={{
+                  opacity: 0,
+                  y: 12,
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                transition={{
+                  duration: 0.22,
+                }}
+                onClick={() =>
+                  openReceipt({
+                    source,
+                    item,
+                  })
+                }
+              >
+                <div className="receipt-card-top">
+                  <div className="receipt-icon">
+                    <Icon size={18} />
+                  </div>
+
+                  <span className="receipt-source">
+                    {getSourceLabel(source)}
+                  </span>
+                </div>
+
+                <div className="receipt-card-body">
+                  <h3>{title}</h3>
+
+                  <p>{subtitle}</p>
+                </div>
+
+                <div className="receipt-card-bottom">
+                  <span>{getDate(item, source)}</span>
+
+                  {amount !== null && <strong>{formatAmount(amount)}</strong>}
+                </div>
+              </motion.button>
+            );
+          })}
+        </motion.div>
       ) : (
-        <div className="empty-receipts">
-          <Search size={30} />
+        <div className="explore-empty">
+          <Search size={28} />
 
-          <h3>No matching receipts</h3>
+          <h3>No matching traces</h3>
 
-          <p>Try another search term or change the dataset filter.</p>
+          <p>Try another keyword or switch the dataset filter.</p>
+
+          {search && (
+            <button type="button" onClick={clearSearch}>
+              CLEAR SEARCH
+            </button>
+          )}
         </div>
       )}
 
-      {selectedReceipt && (
-        <div
-          className="receipt-modal-backdrop"
-          onClick={() => setSelectedReceipt(null)}
-        >
-          <motion.div
-            className="receipt-modal"
-            initial={{ opacity: 0, scale: 0.92, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            onClick={(event) => event.stopPropagation()}
+      {/* =================================================
+          PAGINATION
+      ================================================= */}
+
+      {totalPages > 1 && (
+        <div className="explore-pagination">
+          <button
+            type="button"
+            onClick={() => goToPage(page - 1)}
+            disabled={page === 1}
+            aria-label="Previous page"
           >
-            <button
-              className="modal-close"
-              onClick={() => setSelectedReceipt(null)}
-              aria-label="Close receipt"
+            <ChevronLeft size={17} />
+          </button>
+
+          <div className="page-indicator">
+            <span>{String(page).padStart(2, "0")}</span>
+
+            <small>/ {String(totalPages).padStart(2, "0")}</small>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => goToPage(page + 1)}
+            disabled={page === totalPages}
+            aria-label="Next page"
+          >
+            <ChevronRight size={17} />
+          </button>
+        </div>
+      )}
+
+      {/* =================================================
+          DETAIL MODAL
+      ================================================= */}
+
+      <AnimatePresence>
+        {selected && (
+          <motion.div
+            className="receipt-modal-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={closeReceipt}
+          >
+            <motion.div
+              className="receipt-modal"
+              initial={{
+                opacity: 0,
+                scale: 0.96,
+                y: 15,
+              }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+                y: 0,
+              }}
+              exit={{
+                opacity: 0,
+                scale: 0.96,
+                y: 15,
+              }}
+              transition={{
+                duration: 0.2,
+              }}
+              onClick={(event) => event.stopPropagation()}
             >
-              <X size={20} />
-            </button>
+              <button
+                type="button"
+                className="receipt-modal-close"
+                onClick={closeReceipt}
+                aria-label="Close receipt"
+              >
+                <X size={18} />
+              </button>
 
-            <div className="modal-label">
-              {getTypeLabel(selectedReceipt.source)}
-            </div>
-
-            <h2>{getTitle(selectedReceipt.item, selectedReceipt.source)}</h2>
-
-            <p className="modal-subtitle">
-              {getSubtitle(selectedReceipt.item, selectedReceipt.source)}
-            </p>
-
-            <div className="modal-details">
-              <div>
-                <span>DATE</span>
-                <strong>
-                  {formatDate(
-                    getDate(selectedReceipt.item, selectedReceipt.source),
-                  )}
-                </strong>
+              <div className="receipt-modal-label">
+                {getSourceLabel(selected.source)}
               </div>
 
-              {selectedReceipt.source !== "music" && (
+              <h3>{getTitle(selected.item, selected.source)}</h3>
+
+              <p className="receipt-modal-subtitle">
+                {getSubtitle(selected.item, selected.source)}
+              </p>
+
+              <div className="receipt-detail-grid">
                 <div>
-                  <span>AMOUNT</span>
-                  <strong>{formatAmount(selectedReceipt.item.amount)}</strong>
+                  <span>DATE</span>
+                  <strong>
+                    {getDate(selected.item, selected.source) || "—"}
+                  </strong>
                 </div>
-              )}
 
-              {selectedReceipt.source === "music" && (
-                <>
+                {getAmount(selected.item, selected.source) !== null && (
                   <div>
-                    <span>ARTIST</span>
-                    <strong>{selectedReceipt.item.artistName || "—"}</strong>
-                  </div>
-
-                  <div>
-                    <span>PLATFORM</span>
-                    <strong>{selectedReceipt.item.platform || "—"}</strong>
-                  </div>
-
-                  <div>
-                    <span>LISTENING TIME</span>
+                    <span>AMOUNT</span>
                     <strong>
-                      {Math.round(
-                        Number(selectedReceipt.item.msPlayed || 0) / 60000,
-                      )}{" "}
-                      min
+                      {formatAmount(getAmount(selected.item, selected.source))}
                     </strong>
                   </div>
-                </>
-              )}
+                )}
 
-              {selectedReceipt.source === "household" && (
-                <>
-                  <div>
-                    <span>CATEGORY</span>
-                    <strong>{selectedReceipt.item.category || "—"}</strong>
-                  </div>
+                {selected.source === "music" && (
+                  <>
+                    <div>
+                      <span>PLATFORM</span>
+                      <strong>{selected.item.platform || "—"}</strong>
+                    </div>
 
-                  <div>
-                    <span>MODE</span>
-                    <strong>{selectedReceipt.item.mode || "—"}</strong>
-                  </div>
+                    <div>
+                      <span>ALBUM</span>
+                      <strong>{selected.item.albumName || "—"}</strong>
+                    </div>
 
-                  <div>
-                    <span>TYPE</span>
-                    <strong>{selectedReceipt.item.incomeExpense || "—"}</strong>
-                  </div>
-                </>
-              )}
+                    <div>
+                      <span>SKIPPED</span>
+                      <strong>{String(selected.item.skipped ?? "—")}</strong>
+                    </div>
+                  </>
+                )}
 
-              {selectedReceipt.source === "transactions" && (
-                <>
-                  <div>
-                    <span>CATEGORY</span>
-                    <strong>{selectedReceipt.item.category || "—"}</strong>
-                  </div>
+                {selected.source === "household" && (
+                  <>
+                    <div>
+                      <span>CATEGORY</span>
+                      <strong>{selected.item.category || "—"}</strong>
+                    </div>
 
-                  <div>
-                    <span>LOCATION</span>
-                    <strong>{selectedReceipt.item.city || "—"}</strong>
-                  </div>
+                    <div>
+                      <span>SUBCATEGORY</span>
+                      <strong>{selected.item.subcategory || "—"}</strong>
+                    </div>
 
-                  <div>
-                    <span>STATE</span>
-                    <strong>{selectedReceipt.item.state || "—"}</strong>
-                  </div>
-                </>
-              )}
-            </div>
+                    <div>
+                      <span>TYPE</span>
+                      <strong>{selected.item.incomeExpense || "—"}</strong>
+                    </div>
+                  </>
+                )}
+
+                {selected.source === "transactions" && (
+                  <>
+                    <div>
+                      <span>CATEGORY</span>
+                      <strong>{selected.item.category || "—"}</strong>
+                    </div>
+
+                    <div>
+                      <span>CITY</span>
+                      <strong>{selected.item.city || "—"}</strong>
+                    </div>
+
+                    <div>
+                      <span>STATE</span>
+                      <strong>{selected.item.state || "—"}</strong>
+                    </div>
+                  </>
+                )}
+              </div>
+
+              <div className="receipt-modal-note">
+                This record is part of the provided dataset and is presented as
+                a digital trace.
+              </div>
+            </motion.div>
           </motion.div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
     </section>
   );
 }

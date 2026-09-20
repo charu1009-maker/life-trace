@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { ArrowDown, Sparkles } from "lucide-react";
 
 import LifeUniverse from "./LifeUniverse";
+import PatternDiscovery from "./PatternDiscovery";
 import ExploreReceipts from "./ExploreReceipts";
 
 import "./App.css";
@@ -20,9 +21,10 @@ function App() {
 
   const fullText = "Every moment leaves a trace.";
 
-  // -----------------------------
-  // Typing animation
-  // -----------------------------
+  // =====================================
+  // TYPING ANIMATION
+  // =====================================
+
   useEffect(() => {
     let index = 0;
 
@@ -38,9 +40,10 @@ function App() {
     return () => clearInterval(timer);
   }, []);
 
-  // -----------------------------
-  // Load all three datasets once
-  // -----------------------------
+  // =====================================
+  // LOAD ALL THREE DATASETS
+  // =====================================
+
   useEffect(() => {
     let cancelled = false;
 
@@ -92,14 +95,19 @@ function App() {
     };
   }, []);
 
-  // -----------------------------
-  // Smooth scroll to universe
-  // -----------------------------
+  // =====================================
+  // SMOOTH SCROLL TO LIFE UNIVERSE
+  // =====================================
+
   function enterStory() {
     document.getElementById("life-universe")?.scrollIntoView({
       behavior: "smooth",
     });
   }
+
+  // =====================================
+  // RENDER
+  // =====================================
 
   return (
     <main className="app">
@@ -172,7 +180,6 @@ function App() {
 
           <div className="typing-line">
             {typedText}
-
             <span className="cursor">|</span>
           </div>
 
@@ -212,9 +219,7 @@ function App() {
           }}
         >
           <div className="orb-ring ring-one" />
-
           <div className="orb-ring ring-two" />
-
           <div className="orb-ring ring-three" />
 
           <div className="orb-core">
@@ -230,6 +235,13 @@ function App() {
       <div id="life-universe">
         <LifeUniverse data={data} loading={dataLoading} />
       </div>
+
+      {/* =====================================
+          PATTERN DISCOVERY
+          ATTEMPT 2 FEATURE
+      ===================================== */}
+
+      {!dataLoading && <PatternDiscovery data={data} loading={dataLoading} />}
 
       {/* =====================================
           RECEIPT EXPLORER

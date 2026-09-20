@@ -1,0 +1,820 @@
+/* =========================================================
+   PATTERN DISCOVERY
+   ========================================================= */
+
+.pattern-section {
+  position: relative;
+  width: 100%;
+  padding: 150px 8vw;
+
+  box-sizing: border-box;
+
+  background:
+    radial-gradient(
+      circle at 15% 20%,
+      rgba(124, 58, 237, 0.09),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 85% 80%,
+      rgba(99, 102, 241, 0.06),
+      transparent 35%
+    );
+
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.pattern-header {
+  max-width: 850px;
+  margin-bottom: 70px;
+}
+
+.pattern-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  margin-bottom: 22px;
+
+  font-family: "DM Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+
+  color: #a78bfa;
+  text-transform: uppercase;
+}
+
+.pattern-header h2 {
+  margin: 0;
+
+  font-size: clamp(48px, 6vw, 88px);
+  line-height: 0.95;
+  letter-spacing: -0.055em;
+  font-weight: 600;
+
+  color: #ffffff;
+}
+
+.pattern-header h2 span {
+  color: #a78bfa;
+
+  text-shadow: 0 0 30px rgba(167, 139, 250, 0.25);
+}
+
+.pattern-header p {
+  max-width: 650px;
+
+  margin: 25px 0 0;
+
+  font-size: 16px;
+  line-height: 1.7;
+
+  color: rgba(255, 255, 255, 0.52);
+}
+
+/* =========================================================
+   MAIN LAYOUT
+   ========================================================= */
+
+.pattern-layout {
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+
+  gap: 32px;
+
+  align-items: stretch;
+}
+
+/* =========================================================
+   LEFT MENU
+   ========================================================= */
+
+.pattern-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pattern-tab {
+  position: relative;
+
+  width: 100%;
+  min-height: 64px;
+
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  padding: 0 20px;
+
+  border: 1px solid transparent;
+  border-radius: 8px;
+
+  background: transparent;
+
+  color: rgba(255, 255, 255, 0.42);
+
+  font-family: "DM Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    color 0.25s ease,
+    background 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.pattern-tab:hover {
+  color: rgba(255, 255, 255, 0.85);
+
+  background: rgba(255, 255, 255, 0.025);
+
+  border-color: rgba(255, 255, 255, 0.06);
+
+  transform: translateX(3px);
+}
+
+.pattern-tab.active {
+  color: #ffffff;
+
+  background: linear-gradient(
+    135deg,
+    rgba(124, 58, 237, 0.13),
+    rgba(124, 58, 237, 0.035)
+  );
+
+  border-color: rgba(139, 92, 246, 0.22);
+
+  box-shadow: inset 0 0 30px rgba(124, 58, 237, 0.025);
+}
+
+.pattern-tab svg {
+  flex-shrink: 0;
+
+  color: rgba(255, 255, 255, 0.38);
+
+  transition: color 0.25s ease;
+}
+
+.pattern-tab.active svg {
+  color: #a78bfa;
+}
+
+.pattern-tab-line {
+  position: absolute;
+
+  right: -1px;
+  top: 14px;
+  bottom: 14px;
+
+  width: 2px;
+
+  background: #a78bfa;
+
+  border-radius: 3px;
+
+  box-shadow: 0 0 12px rgba(167, 139, 250, 0.7);
+}
+
+/* =========================================================
+   MAIN CARD
+   ========================================================= */
+
+.pattern-card {
+  position: relative;
+
+  min-width: 0;
+
+  padding: 46px;
+
+  box-sizing: border-box;
+
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.035),
+    rgba(255, 255, 255, 0.012)
+  );
+
+  border: 1px solid rgba(255, 255, 255, 0.09);
+
+  border-radius: 10px;
+
+  overflow: hidden;
+
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.28);
+}
+
+.pattern-card::before {
+  content: "";
+
+  position: absolute;
+
+  width: 400px;
+  height: 400px;
+
+  top: -220px;
+  right: -150px;
+
+  background: radial-gradient(
+    circle,
+    rgba(124, 58, 237, 0.13),
+    transparent 68%
+  );
+
+  pointer-events: none;
+}
+
+/* =========================================================
+   CARD TOP
+   ========================================================= */
+
+.pattern-card-top {
+  position: relative;
+  z-index: 1;
+
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr);
+
+  gap: 20px;
+
+  align-items: start;
+}
+
+.pattern-icon {
+  width: 54px;
+  height: 54px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: linear-gradient(
+    135deg,
+    rgba(139, 92, 246, 0.2),
+    rgba(139, 92, 246, 0.04)
+  );
+
+  border: 1px solid rgba(139, 92, 246, 0.22);
+
+  color: #a78bfa;
+
+  box-shadow: 0 0 30px rgba(124, 58, 237, 0.08);
+}
+
+.pattern-label {
+  margin-bottom: 9px;
+
+  font-family: "DM Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.13em;
+
+  color: #a78bfa;
+}
+
+.pattern-card h3 {
+  margin: 0;
+
+  font-size: clamp(30px, 3vw, 48px);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  font-weight: 600;
+
+  color: #ffffff;
+}
+
+.pattern-card-top p {
+  max-width: 700px;
+
+  margin: 16px 0 0;
+
+  font-size: 14px;
+  line-height: 1.7;
+
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* =========================================================
+   MONTHLY ACTIVITY CHART
+   ========================================================= */
+
+.month-chart {
+  position: relative;
+  z-index: 1;
+
+  width: 100%;
+
+  margin-top: 52px;
+}
+
+.chart-title {
+  margin-bottom: 24px;
+
+  font-family: "DM Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.13em;
+
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* 12 MONTH GRID */
+
+.bars {
+  width: 100%;
+  height: 300px;
+
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+
+  align-items: end;
+
+  gap: 14px;
+
+  padding: 0 8px;
+
+  box-sizing: border-box;
+}
+
+/* EACH MONTH */
+
+.bar-column {
+  min-width: 0;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* NUMBER ABOVE BAR */
+
+.bar-value {
+  min-height: 18px;
+
+  margin-bottom: 8px;
+
+  font-family: "DM Mono", monospace;
+
+  font-size: 9px;
+  line-height: 1.2;
+
+  color: rgba(255, 255, 255, 0.52);
+
+  white-space: nowrap;
+
+  text-align: center;
+}
+
+/* BAR BACKGROUND */
+
+.bar-track {
+  width: 100%;
+  max-width: 34px;
+
+  height: 210px;
+
+  display: flex;
+  align-items: flex-end;
+
+  background: rgba(255, 255, 255, 0.045);
+
+  border: 1px solid rgba(255, 255, 255, 0.07);
+
+  border-radius: 6px 6px 3px 3px;
+
+  overflow: hidden;
+
+  box-sizing: border-box;
+}
+
+/* BAR */
+
+.bar-fill {
+  width: 100%;
+
+  min-height: 4px;
+
+  background: linear-gradient(to top, #7c3aed, #a78bfa);
+
+  border-radius: 5px 5px 2px 2px;
+
+  box-shadow: 0 0 18px rgba(139, 92, 246, 0.25);
+}
+
+/* MONTH LABEL */
+
+.bar-column > span {
+  display: block;
+
+  margin-top: 10px;
+
+  font-family: "DM Mono", monospace;
+
+  font-size: 10px;
+  line-height: 1;
+
+  color: rgba(255, 255, 255, 0.5);
+
+  white-space: nowrap;
+
+  text-align: center;
+}
+
+/* =========================================================
+   INSIGHT BOX
+   ========================================================= */
+
+.pattern-insight {
+  margin-top: 34px;
+
+  min-height: 64px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 0 20px;
+
+  box-sizing: border-box;
+
+  background: linear-gradient(
+    90deg,
+    rgba(124, 58, 237, 0.12),
+    rgba(124, 58, 237, 0.025)
+  );
+
+  border-left: 2px solid #8b5cf6;
+
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.pattern-insight svg {
+  flex-shrink: 0;
+
+  color: #a78bfa;
+}
+
+.pattern-insight span {
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.pattern-insight strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* =========================================================
+   SIGNAL PANELS
+   ========================================================= */
+
+.signal-panel {
+  position: relative;
+  z-index: 1;
+
+  margin-top: 48px;
+}
+
+.signal-list {
+  display: flex;
+  flex-direction: column;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.signal-row {
+  min-height: 64px;
+
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+
+  align-items: center;
+
+  gap: 16px;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.signal-rank {
+  font-family: "DM Mono", monospace;
+  font-size: 10px;
+
+  color: rgba(167, 139, 250, 0.75);
+}
+
+.signal-name {
+  min-width: 0;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  font-size: 14px;
+
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.signal-count {
+  font-family: "DM Mono", monospace;
+
+  font-size: 11px;
+
+  color: rgba(255, 255, 255, 0.48);
+
+  white-space: nowrap;
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.pattern-footer {
+  position: relative;
+  z-index: 1;
+
+  margin-top: 34px;
+  padding-top: 20px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+
+  color: rgba(255, 255, 255, 0.27);
+
+  font-family: "DM Mono", monospace;
+  font-size: 8px;
+
+  letter-spacing: 0.12em;
+  line-height: 1.5;
+}
+
+.pattern-footer svg {
+  flex-shrink: 0;
+
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.pattern-loading {
+  min-height: 400px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family: "DM Mono", monospace;
+
+  font-size: 10px;
+  letter-spacing: 0.14em;
+
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1000px) {
+  .pattern-section {
+    padding: 120px 6vw;
+  }
+
+  .pattern-layout {
+    grid-template-columns: 220px minmax(0, 1fr);
+
+    gap: 22px;
+  }
+
+  .pattern-card {
+    padding: 34px;
+  }
+
+  .bars {
+    gap: 9px;
+  }
+
+  .bar-track {
+    max-width: 28px;
+  }
+}
+
+/* =========================================================
+   MOBILE / SMALL TABLET
+   ========================================================= */
+
+@media (max-width: 800px) {
+  .pattern-section {
+    padding: 100px 5vw;
+  }
+
+  .pattern-header {
+    margin-bottom: 45px;
+  }
+
+  .pattern-header h2 {
+    font-size: clamp(42px, 10vw, 65px);
+  }
+
+  .pattern-layout {
+    grid-template-columns: 1fr;
+
+    gap: 18px;
+  }
+
+  .pattern-menu {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 8px;
+  }
+
+  .pattern-tab {
+    min-height: 58px;
+
+    padding: 0 14px;
+
+    font-size: 9px;
+  }
+
+  .pattern-tab-line {
+    right: 10px;
+
+    top: auto;
+    bottom: -1px;
+
+    width: calc(100% - 20px);
+    height: 2px;
+  }
+
+  .pattern-card {
+    padding: 30px;
+  }
+
+  .pattern-card-top {
+    grid-template-columns: 46px minmax(0, 1fr);
+
+    gap: 15px;
+  }
+
+  .pattern-icon {
+    width: 46px;
+    height: 46px;
+  }
+
+  .pattern-card h3 {
+    font-size: 32px;
+  }
+
+  .bars {
+    height: 250px;
+
+    gap: 7px;
+
+    padding: 0;
+  }
+
+  .bar-track {
+    max-width: 24px;
+
+    height: 170px;
+  }
+
+  .bar-value {
+    font-size: 8px;
+  }
+
+  .bar-column > span {
+    font-size: 8px;
+  }
+}
+
+/* =========================================================
+   PHONE
+   ========================================================= */
+
+@media (max-width: 520px) {
+  .pattern-section {
+    padding: 80px 20px;
+  }
+
+  .pattern-header h2 {
+    font-size: 42px;
+  }
+
+  .pattern-header p {
+    font-size: 14px;
+  }
+
+  .pattern-menu {
+    grid-template-columns: 1fr;
+  }
+
+  .pattern-tab {
+    min-height: 54px;
+  }
+
+  .pattern-card {
+    padding: 24px 18px;
+  }
+
+  .pattern-card-top {
+    grid-template-columns: 1fr;
+  }
+
+  .pattern-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .pattern-card h3 {
+    font-size: 28px;
+  }
+
+  .pattern-card-top p {
+    font-size: 13px;
+  }
+
+  /*
+    Keep the 12-month chart horizontally scrollable
+    on very small screens instead of squeezing it.
+  */
+
+  .month-chart {
+    overflow-x: auto;
+
+    padding-bottom: 8px;
+  }
+
+  .bars {
+    min-width: 600px;
+  }
+
+  .pattern-insight {
+    align-items: flex-start;
+
+    padding: 16px;
+
+    font-size: 12px;
+  }
+
+  .signal-row {
+    grid-template-columns: 32px minmax(0, 1fr) auto;
+
+    gap: 10px;
+
+    min-height: 58px;
+  }
+
+  .signal-name {
+    font-size: 13px;
+  }
+
+  .signal-count {
+    font-size: 9px;
+  }
+
+  .pattern-footer {
+    align-items: flex-start;
+
+    font-size: 7px;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION ACCESSIBILITY
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .pattern-tab {
+    transition: none;
+  }
+
+  .pattern-tab:hover {
+    transform: none;
+  }
+
+  .bar-fill {
+    transition: none !important;
+  }
+}
