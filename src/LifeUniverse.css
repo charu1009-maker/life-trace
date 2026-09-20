@@ -1,0 +1,497 @@
+.life-universe {
+  position: relative;
+  min-height: 100vh;
+  padding: 130px 7vw 100px;
+  background:
+    radial-gradient(
+      circle at 50% 35%,
+      rgba(126, 87, 194, 0.08),
+      transparent 30%
+    ),
+    #050507;
+  color: #f5f3f8;
+  overflow: hidden;
+}
+
+.universe-header {
+  max-width: 1200px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 40px;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: "DM Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: #8d8798;
+  margin-bottom: 20px;
+}
+
+.eyebrow-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #b98cff;
+  box-shadow: 0 0 14px #b98cff;
+}
+
+.universe-header h2 {
+  margin: 0;
+  font-size: clamp(45px, 7vw, 92px);
+  line-height: 0.9;
+  letter-spacing: -0.055em;
+  font-weight: 500;
+}
+
+.universe-header h2 span {
+  color: #7f7888;
+}
+
+.universe-header p {
+  max-width: 430px;
+  margin: 25px 0 0;
+  color: #85808e;
+  line-height: 1.7;
+  font-size: 14px;
+}
+
+.record-counter {
+  min-width: 180px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.025);
+  backdrop-filter: blur(20px);
+}
+
+.record-counter span,
+.insight-card span,
+.discover-card span {
+  display: block;
+  color: #716c78;
+  font-family: "DM Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+}
+
+.record-counter strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 27px;
+  font-weight: 500;
+}
+
+.universe-filter {
+  max-width: 1200px;
+  margin: 55px auto 20px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.universe-filter button {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.025);
+  color: #77727e;
+  font-family: "DM Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.13em;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.universe-filter button:hover,
+.universe-filter button.active {
+  color: white;
+  border-color: rgba(185, 140, 255, 0.5);
+  background: rgba(185, 140, 255, 0.09);
+}
+
+.constellation-wrap {
+  position: relative;
+  max-width: 1200px;
+  height: 650px;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background:
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(185, 140, 255, 0.09),
+      transparent 24%
+    ),
+    rgba(255, 255, 255, 0.012);
+}
+
+.constellation-grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.2;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 55px 55px;
+}
+
+.orbit {
+  position: absolute;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 50%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.orbit-one {
+  width: 310px;
+  height: 310px;
+}
+
+.orbit-two {
+  width: 510px;
+  height: 510px;
+}
+
+.orbit-three {
+  width: 720px;
+  height: 720px;
+}
+
+.core-node {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 120px;
+  height: 120px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px solid rgba(185, 140, 255, 0.45);
+  background: rgba(12, 9, 17, 0.9);
+  box-shadow:
+    0 0 40px rgba(185, 140, 255, 0.16),
+    inset 0 0 30px rgba(185, 140, 255, 0.07);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  z-index: 4;
+}
+
+.core-node svg {
+  color: #c59eff;
+  margin-bottom: 7px;
+}
+
+.core-node span {
+  font-family: "DM Mono", monospace;
+  color: #716b79;
+  font-size: 8px;
+  letter-spacing: 0.2em;
+}
+
+.core-node strong {
+  font-size: 15px;
+  letter-spacing: 0.15em;
+}
+
+.core-glow {
+  position: absolute;
+  inset: -30px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(185, 140, 255, 0.15),
+    transparent 65%
+  );
+  z-index: -1;
+  animation: corePulse 3s ease-in-out infinite;
+}
+
+.data-node {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  z-index: 5;
+  cursor: pointer;
+}
+
+.node-ring {
+  width: 55px;
+  height: 55px;
+  flex: 0 0 55px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--node-color);
+  border: 1px solid color-mix(in srgb, var(--node-color) 55%, transparent);
+  background: rgba(5, 5, 7, 0.85);
+  box-shadow: 0 0 25px color-mix(in srgb, var(--node-color) 15%, transparent);
+}
+
+.node-info span {
+  display: block;
+  font-family: "DM Mono", monospace;
+  font-size: 8px;
+  letter-spacing: 0.17em;
+  color: #716c78;
+}
+
+.node-info strong {
+  display: inline-block;
+  margin-top: 3px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.node-info small {
+  margin-left: 5px;
+  color: #59545f;
+  font-size: 10px;
+}
+
+.connection {
+  position: absolute;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(185, 140, 255, 0.25),
+    transparent
+  );
+  transform-origin: left center;
+}
+
+.connection-a {
+  width: 290px;
+  left: 29%;
+  top: 39%;
+  transform: rotate(22deg);
+}
+
+.connection-b {
+  width: 330px;
+  left: 48%;
+  top: 49%;
+  transform: rotate(-27deg);
+}
+
+.connection-c {
+  width: 250px;
+  left: 32%;
+  top: 60%;
+  transform: rotate(-13deg);
+}
+
+.floating-pulse {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #c59eff;
+  box-shadow: 0 0 14px #c59eff;
+  animation: floatPulse 3s ease-in-out infinite;
+}
+
+.pulse-one {
+  left: 27%;
+  top: 29%;
+}
+
+.pulse-two {
+  right: 24%;
+  top: 62%;
+  animation-delay: 1s;
+}
+
+.pulse-three {
+  left: 61%;
+  top: 18%;
+  animation-delay: 2s;
+}
+
+.insight-strip {
+  max-width: 1200px;
+  margin: 18px auto 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr) 1.5fr;
+  gap: 8px;
+}
+
+.insight-card,
+.discover-card {
+  min-height: 115px;
+  padding: 19px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.insight-card strong {
+  display: block;
+  margin-top: 12px;
+  font-size: 22px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.insight-card small {
+  display: block;
+  margin-top: 6px;
+  color: #5f5a65;
+  font-size: 10px;
+}
+
+.insight-card .text-value {
+  font-size: 15px;
+}
+
+.discover-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.discover-card:hover {
+  border-color: rgba(185, 140, 255, 0.3);
+  background: rgba(185, 140, 255, 0.045);
+}
+
+.discover-card strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 17px;
+  font-weight: 400;
+}
+
+.discover-card svg {
+  color: #b98cff;
+}
+
+.data-loading {
+  height: 115px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #77727e;
+  font-family: "DM Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+}
+
+.data-loading svg {
+  color: #b98cff;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes corePulse {
+  0%,
+  100% {
+    transform: scale(0.9);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+
+@keyframes floatPulse {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translateY(-18px);
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 900px) {
+  .universe-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .record-counter {
+    width: 100%;
+  }
+
+  .constellation-wrap {
+    height: 560px;
+  }
+
+  .orbit-three {
+    width: 600px;
+    height: 600px;
+  }
+
+  .insight-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .life-universe {
+    padding: 90px 20px 70px;
+  }
+
+  .universe-header h2 {
+    font-size: 48px;
+  }
+
+  .constellation-wrap {
+    height: 500px;
+  }
+
+  .orbit-one {
+    width: 230px;
+    height: 230px;
+  }
+
+  .orbit-two {
+    width: 390px;
+    height: 390px;
+  }
+
+  .orbit-three {
+    width: 500px;
+    height: 500px;
+  }
+
+  .core-node {
+    width: 95px;
+    height: 95px;
+  }
+
+  .data-node {
+    transform: scale(0.85);
+    transform-origin: left center;
+  }
+
+  .insight-strip {
+    grid-template-columns: 1fr;
+  }
+}

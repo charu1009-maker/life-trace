@@ -1,0 +1,9 @@
+{
+  "records": {
+    "music": 149860,
+    "household": 2461,
+    "transactions": 10267,
+    "total": 162588
+  },
+  "privacy": "Direct card numbers, names, street addresses, DOB, and customer IDs were excluded from the frontend pack."
+}
