@@ -1,0 +1,648 @@
+/* =========================================================
+   LIFE PULSE / TIME MACHINE
+   ========================================================= */
+
+.pulse-section {
+  position: relative;
+
+  width: 100%;
+
+  padding: 150px 8vw;
+
+  box-sizing: border-box;
+
+  background: radial-gradient(
+    circle at 50% 45%,
+    rgba(124, 58, 237, 0.08),
+    transparent 38%
+  );
+
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.pulse-header {
+  max-width: 850px;
+
+  margin-bottom: 70px;
+}
+
+.pulse-eyebrow {
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  margin-bottom: 22px;
+
+  color: #a78bfa;
+
+  font-family: "DM Mono", monospace;
+
+  font-size: 10px;
+
+  letter-spacing: 0.14em;
+}
+
+.pulse-header h2 {
+  margin: 0;
+
+  font-size: clamp(50px, 6vw, 88px);
+
+  line-height: 0.95;
+
+  letter-spacing: -0.055em;
+
+  font-weight: 600;
+
+  color: #ffffff;
+}
+
+.pulse-header h2 span {
+  color: #a78bfa;
+
+  text-shadow: 0 0 30px rgba(167, 139, 250, 0.25);
+}
+
+.pulse-header p {
+  max-width: 680px;
+
+  margin: 25px 0 0;
+
+  color: rgba(255, 255, 255, 0.5);
+
+  font-size: 15px;
+
+  line-height: 1.7;
+}
+
+/* =========================================================
+   YEAR DISPLAY
+   ========================================================= */
+
+.pulse-year {
+  display: flex;
+
+  align-items: baseline;
+
+  gap: 18px;
+
+  margin-bottom: 35px;
+}
+
+.pulse-year span {
+  color: rgba(255, 255, 255, 0.32);
+
+  font-family: "DM Mono", monospace;
+
+  font-size: 9px;
+
+  letter-spacing: 0.12em;
+}
+
+.pulse-year strong {
+  font-size: clamp(60px, 9vw, 120px);
+
+  line-height: 0.8;
+
+  letter-spacing: -0.07em;
+
+  color: #ffffff;
+
+  font-weight: 600;
+
+  text-shadow: 0 0 45px rgba(139, 92, 246, 0.18);
+}
+
+/* =========================================================
+   TIMELINE
+   ========================================================= */
+
+.pulse-timeline {
+  position: relative;
+
+  width: 100%;
+
+  padding: 15px 0 0;
+
+  margin-bottom: 55px;
+}
+
+.pulse-line {
+  position: absolute;
+
+  left: 0;
+  right: 0;
+
+  top: 28px;
+
+  height: 1px;
+
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05),
+    rgba(167, 139, 250, 0.45),
+    rgba(255, 255, 255, 0.05)
+  );
+}
+
+.pulse-years {
+  position: relative;
+
+  display: grid;
+
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+
+  gap: 5px;
+}
+
+.pulse-year-node {
+  position: relative;
+
+  min-width: 0;
+
+  height: 70px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: flex-start;
+
+  gap: 15px;
+
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  cursor: pointer;
+
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.pulse-year-node small {
+  font-family: "DM Mono", monospace;
+
+  font-size: 9px;
+
+  white-space: nowrap;
+
+  transition: color 0.25s ease;
+}
+
+.pulse-node {
+  width: 10px;
+  height: 10px;
+
+  margin-top: 9px;
+
+  border-radius: 50%;
+
+  background: rgba(167, 139, 250, 0.25);
+
+  border: 1px solid rgba(167, 139, 250, 0.5);
+
+  box-shadow: 0 0 0 rgba(139, 92, 246, 0);
+
+  transition:
+    background 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.pulse-year-node:hover small,
+.pulse-year-node.active small {
+  color: #ffffff;
+}
+
+.pulse-year-node:hover .pulse-node {
+  background: #a78bfa;
+
+  box-shadow: 0 0 18px rgba(167, 139, 250, 0.6);
+}
+
+.pulse-year-node.active .pulse-node {
+  background: #ffffff;
+
+  border-color: #a78bfa;
+
+  box-shadow: 0 0 22px rgba(167, 139, 250, 0.8);
+}
+
+/* =========================================================
+   DASHBOARD
+   ========================================================= */
+
+.pulse-dashboard {
+  display: grid;
+
+  grid-template-columns:
+    1.6fr
+    repeat(3, 1fr);
+
+  gap: 10px;
+}
+
+/* TOTAL CARD */
+
+.pulse-total,
+.pulse-data-card {
+  min-height: 235px;
+
+  box-sizing: border-box;
+
+  padding: 28px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  border-radius: 8px;
+
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.035),
+    rgba(255, 255, 255, 0.008)
+  );
+}
+
+.pulse-total {
+  position: relative;
+
+  overflow: hidden;
+}
+
+.pulse-total::after {
+  content: "";
+
+  position: absolute;
+
+  width: 300px;
+  height: 300px;
+
+  right: -160px;
+  bottom: -190px;
+
+  background: radial-gradient(
+    circle,
+    rgba(124, 58, 237, 0.22),
+    transparent 68%
+  );
+}
+
+.pulse-card-label {
+  position: relative;
+  z-index: 1;
+
+  font-family: "DM Mono", monospace;
+
+  font-size: 9px;
+
+  letter-spacing: 0.13em;
+
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.pulse-total-number {
+  position: relative;
+  z-index: 1;
+
+  margin-top: 35px;
+
+  font-size: clamp(45px, 5vw, 75px);
+
+  line-height: 0.9;
+
+  letter-spacing: -0.06em;
+
+  color: #ffffff;
+}
+
+.pulse-total p {
+  position: relative;
+  z-index: 1;
+
+  margin: 14px 0 30px;
+
+  color: rgba(255, 255, 255, 0.38);
+
+  font-size: 12px;
+}
+
+/* DENSITY */
+
+.pulse-density {
+  position: relative;
+  z-index: 1;
+
+  width: 100%;
+
+  height: 3px;
+
+  overflow: hidden;
+
+  background: rgba(255, 255, 255, 0.07);
+
+  border-radius: 4px;
+}
+
+.pulse-density div {
+  height: 100%;
+
+  background: linear-gradient(90deg, #7c3aed, #a78bfa);
+
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.6);
+}
+
+/* =========================================================
+   DATA CARDS
+   ========================================================= */
+
+.pulse-data-card {
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: space-between;
+
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    background 0.25s ease;
+}
+
+.pulse-data-card:hover {
+  transform: translateY(-4px);
+
+  border-color: rgba(167, 139, 250, 0.28);
+
+  background: linear-gradient(
+    145deg,
+    rgba(124, 58, 237, 0.08),
+    rgba(255, 255, 255, 0.01)
+  );
+}
+
+.pulse-card-top {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 10px;
+}
+
+.pulse-card-icon {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 6px;
+
+  color: #a78bfa;
+
+  background: rgba(124, 58, 237, 0.1);
+
+  border: 1px solid rgba(167, 139, 250, 0.15);
+}
+
+.pulse-card-top > span {
+  font-family: "DM Mono", monospace;
+
+  font-size: 8px;
+
+  letter-spacing: 0.1em;
+
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.pulse-data-card strong {
+  display: block;
+
+  margin-top: auto;
+
+  margin-bottom: 7px;
+
+  font-size: clamp(32px, 4vw, 54px);
+
+  line-height: 0.9;
+
+  letter-spacing: -0.055em;
+
+  color: #ffffff;
+}
+
+.pulse-data-card small {
+  color: rgba(255, 255, 255, 0.35);
+
+  font-size: 10px;
+}
+
+/* =========================================================
+   STORY
+   ========================================================= */
+
+.pulse-story {
+  display: flex;
+
+  align-items: center;
+
+  gap: 16px;
+
+  margin-top: 28px;
+
+  padding: 22px;
+
+  border-left: 2px solid #8b5cf6;
+
+  background: linear-gradient(
+    90deg,
+    rgba(124, 58, 237, 0.11),
+    rgba(124, 58, 237, 0.015)
+  );
+}
+
+.pulse-story-icon {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 6px;
+
+  color: #a78bfa;
+
+  background: rgba(124, 58, 237, 0.12);
+}
+
+.pulse-story span {
+  font-family: "DM Mono", monospace;
+
+  font-size: 8px;
+
+  letter-spacing: 0.12em;
+
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.pulse-story p {
+  margin: 7px 0 0;
+
+  color: rgba(255, 255, 255, 0.68);
+
+  font-size: 13px;
+
+  line-height: 1.55;
+}
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+.pulse-reset {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin: 28px auto 0;
+
+  padding: 10px 15px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  border-radius: 5px;
+
+  background: rgba(255, 255, 255, 0.02);
+
+  color: rgba(255, 255, 255, 0.38);
+
+  font-family: "DM Mono", monospace;
+
+  font-size: 8px;
+
+  letter-spacing: 0.08em;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.pulse-reset:hover {
+  color: #ffffff;
+
+  border-color: rgba(167, 139, 250, 0.3);
+
+  background: rgba(124, 58, 237, 0.08);
+}
+
+/* =========================================================
+   FOOTNOTE
+   ========================================================= */
+
+.pulse-footnote {
+  margin-top: 45px;
+
+  text-align: center;
+
+  color: rgba(255, 255, 255, 0.2);
+
+  font-family: "DM Mono", monospace;
+
+  font-size: 8px;
+
+  line-height: 1.6;
+
+  letter-spacing: 0.1em;
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1000px) {
+  .pulse-section {
+    padding: 120px 6vw;
+  }
+
+  .pulse-dashboard {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pulse-total {
+    grid-column: span 2;
+  }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+  .pulse-section {
+    padding: 100px 5vw;
+  }
+
+  .pulse-header {
+    margin-bottom: 50px;
+  }
+
+  .pulse-header h2 {
+    font-size: 48px;
+  }
+
+  .pulse-year strong {
+    font-size: 72px;
+  }
+
+  .pulse-timeline {
+    overflow-x: auto;
+
+    padding-bottom: 15px;
+  }
+
+  .pulse-years {
+    min-width: 650px;
+  }
+
+  .pulse-dashboard {
+    grid-template-columns: 1fr;
+  }
+
+  .pulse-total {
+    grid-column: auto;
+  }
+
+  .pulse-total,
+  .pulse-data-card {
+    min-height: 200px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse-data-card {
+    transition: none;
+  }
+
+  .pulse-data-card:hover {
+    transform: none;
+  }
+}

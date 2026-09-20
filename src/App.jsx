@@ -3,7 +3,10 @@ import { motion } from "framer-motion";
 import { ArrowDown, Sparkles } from "lucide-react";
 
 import LifeUniverse from "./LifeUniverse";
+import LifePulse from "./LifePulse";
 import PatternDiscovery from "./PatternDiscovery";
+import TraceDNA from "./TraceDNA";
+import DataStory from "./DataStory";
 import ExploreReceipts from "./ExploreReceipts";
 
 import "./App.css";
@@ -237,11 +240,28 @@ function App() {
       </div>
 
       {/* =====================================
+          LIFE PULSE / TIME MACHINE
+      ===================================== */}
+
+      {!dataLoading && <LifePulse data={data} />}
+
+      {/* =====================================
           PATTERN DISCOVERY
-          ATTEMPT 2 FEATURE
       ===================================== */}
 
       {!dataLoading && <PatternDiscovery data={data} loading={dataLoading} />}
+
+      {/* =====================================
+          TRACE DNA / DIGITAL FINGERPRINT
+      ===================================== */}
+
+      {!dataLoading && <TraceDNA data={data} />}
+
+      {/* =====================================
+          DATA STORY / INTERACTIVE ARCHIVE
+      ===================================== */}
+
+      {!dataLoading && <DataStory data={data} />}
 
       {/* =====================================
           RECEIPT EXPLORER
